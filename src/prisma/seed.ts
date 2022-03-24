@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+const { prisma } = require('../prisma/client');
 
 async function main() {
   await prisma.author.upsert({

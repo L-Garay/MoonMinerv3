@@ -19,4 +19,31 @@ export const resolvers = {
     books: (parent: any) =>
       prisma.book.findMany({ where: { customerId: parent.id } }),
   },
+  // Get books and their author
+  Book: {
+    author: (parent: any) =>
+      prisma.author.findUnique({ where: { id: parent.authorId } }),
+  },
+  Mutation: {
+    createUserAccount: async (
+      parent: any,
+      args: any,
+      context: any,
+      info: any
+    ) => {
+      console.log('hitting the resolver in the server');
+
+      console.log(parent);
+      console.log(`\n`);
+      console.log(args);
+      console.log(`\n`);
+      console.log(context);
+      console.log(`\n`);
+      console.log(info);
+      const userAccount = await prisma.userAccount.create({
+        data: { name: args.name, email: args.email },
+      });
+      return userAccount;
+    },
+  },
 };

@@ -54,5 +54,6 @@ export const typeDefs = gql`
 
   type Mutation {
     createUserAccount(name: String, email: String): UserAccount
+    createGame(name: String, id: Int): Game
   }
 `;

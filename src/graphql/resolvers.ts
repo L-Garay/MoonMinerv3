@@ -41,5 +41,10 @@ export const resolvers = {
         data: { name: args.name, email: args.email },
       });
     },
+    createGame: async (parent: any, args: any) => {
+      return await prisma.game.create({
+        data: { name: args.name, userAccountId: args.id },
+      });
+    },
   },
 };

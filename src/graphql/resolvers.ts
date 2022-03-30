@@ -8,6 +8,12 @@ export const resolvers = {
     books: () => prisma.book.findMany(),
     authors: () => prisma.author.findMany(),
     customers: () => prisma.customer.findMany(),
+    games: () => prisma.game.findMany(),
+    userAccount: async (parent: any, args: any) => {
+      return await prisma.userAccount.findUnique({
+        where: { email: args.email },
+      });
+    },
   },
   // Get authors and their books
   Author: {
@@ -24,26 +30,16 @@ export const resolvers = {
     author: (parent: any) =>
       prisma.author.findUnique({ where: { id: parent.authorId } }),
   },
+  // Get userAccount and their games
+  UserAccount: {
+    games: (parent: any) =>
+      prisma.game.findMany({ where: { userAccountId: parent.id } }),
+  },
   Mutation: {
-    createUserAccount: async (
-      parent: any,
-      args: any,
-      context: any,
-      info: any
-    ) => {
-      console.log('hitting the resolver in the server');
-
-      console.log(parent);
-      console.log(`\n`);
-      console.log(args);
-      console.log(`\n`);
-      console.log(context);
-      console.log(`\n`);
-      console.log(info);
-      const userAccount = await prisma.userAccount.create({
+    createUserAccount: async (parent: any, args: any) => {
+      return await prisma.userAccount.create({
         data: { name: args.name, email: args.email },
       });
-      return userAccount;
     },
   },
 };

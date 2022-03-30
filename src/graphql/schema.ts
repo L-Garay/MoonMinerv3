@@ -29,8 +29,16 @@ export const typeDefs = gql`
   }
   type UserAccount {
     id: Int
-    email: String
+    email(email: String): String
     name: String
+    games: [Game]
+  }
+  type Game {
+    id: Int
+    name: String
+    createdAt: String
+    updatedAt: String
+    userAccountId: Int
   }
 
   # The "Query" type is special: it lists all of the available queries that
@@ -40,6 +48,8 @@ export const typeDefs = gql`
     books: [Book]
     authors: [Author]
     customers: [Customer]
+    games: [Game]
+    userAccount(email: String): UserAccount
   }
 
   type Mutation {

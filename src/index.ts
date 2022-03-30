@@ -3,15 +3,40 @@ import {
   ApolloServerPluginStopHapiServer,
 } from 'apollo-server-hapi';
 import Hapi from '@hapi/hapi';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
+
 import { typeDefs } from './graphql/schema';
 import { resolvers } from './graphql/resolvers';
 
 async function init() {
   const app = Hapi.server({ port: 5000 });
+
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+  // Create WebSocket server
+  const wsServer = new WebSocketServer({
+    server: app.listener,
+    path: '/subscriptions',
+  });
+
+  const serverCleanup = useServer({ schema }, wsServer);
+
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
-    plugins: [ApolloServerPluginStopHapiServer({ hapiServer: app })],
+    schema,
+    plugins: [
+      ApolloServerPluginStopHapiServer({ hapiServer: app }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
   });
 
   app.route({

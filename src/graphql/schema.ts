@@ -56,4 +56,8 @@ export const typeDefs = gql`
     createUserAccount(name: String, email: String): UserAccount
     createGame(name: String, id: Int): Game
   }
+
+  type Subscription {
+    gameCreated(id: Int): UserAccount
+  }
 `;
